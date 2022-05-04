@@ -1,0 +1,33 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lora', serif;
+}
+
+.header {
+  width: 100%;
+  height: 60vh;
+  position: relative;
+
+  .title {
+    position: absolute;
+    color: white;
+    left: 50%;
+    top: 50%;
+    font-size: 3rem;
+    transform: translate(-50%, -50%);
+  }
+
+  .top-image {
+    width: 100%;
+    height: 100%;
+    background-position: 50% 0px;
+    background-size: cover;
+    background-image: linear-gradient(#00000000, #000000db), url("https://thelegitimatenews.com/wp-content/uploads/2017/06/quran-sareef.jpg");
+  }
+}
+
+.main {
+  min-height: 100vh;
+}
