@@ -1,5 +1,6 @@
 import './App.scss';
 import { useEffect, useRef } from "react"
+import { verses, commentary } from "./verses"
 
 function App() {
 
@@ -31,7 +32,19 @@ function App() {
 
         <div className="sidebar"></div>
 
-        <div className="surah"></div>
+        <div className="surah">
+
+          {
+            verses.map((el, index) => {
+              return (
+                <div className="verse" key={index} id={index}>
+                  <span>{el}</span>
+                </div>
+              )
+            })
+          }
+
+        </div>
 
       </div>
 
