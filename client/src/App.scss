@@ -7,7 +7,7 @@
 
 .header {
   width: 100%;
-  height: 60vh;
+  height: 80vh;
   position: relative;
 
   .title {
@@ -29,19 +29,58 @@
 }
 
 .main {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
-  padding: 100px 50px;
+  padding-top: 50px;
 }
 
 .sidebar {
-  width: 30%;
+  width: 25%;
   height: 100%;
+  overflow-y: hidden;
+
+  .verse-numbers {
+    position: relative;
+
+    span {
+      display: block;
+      margin-top: 40px;
+      color: gray;
+      position: relative;
+      left: 50%;
+    }
+
+    span.active {
+      color: black;
+    }
+  }
 }
 
 .surah {
-  width: 70%;
+  width: 75%;
   height: 100%;
+  overflow-y: scroll;
+  padding-right: 20px;
+  line-height: 80px;
+
+  .verse {
+    font-size: 65px;
+    color: gray;
+  }
+
+  .verse.active {
+    color: black;
+  }
+}
+
+.surah::-webkit-scrollbar {
+  display: none;
+}
+
+.footer {
+  height: 200px;
+  background: black;
+  color: white;
 }
 
 
