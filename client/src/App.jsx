@@ -1,13 +1,19 @@
 import './App.scss';
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState, Fragment } from "react"
 import { verses, commentary } from "./verses"
 
 function App() {
 
   const imageRef = useRef()
-
+  const surahRef = useRef()
+  const sidebarRef = useRef()
   const verseRefs = useRef([])
   const verseNumberRefs = useRef([])
+  const commentaryRefs = useRef([])
+  const cRef = useRef()
+
+  const [cOpen, setCOpen] = useState(false)
+  const [number, setNumber] = useState(0)
 
   function scroll(e) {
     imageRef.current.style.backgroundPosition = "50% " + window.pageYOffset * 0.7 + "px"
@@ -22,61 +28,80 @@ function App() {
     }
   }, [])
 
-
-
-
-  const verseVisible = (entries) => {
-
-    const [entry] = entries
-    const target = entry.target
-    const id = parseInt(entry.target.id)
-
-    if (entry.isIntersecting) {
-      target.classList.add("active")
-      verseNumberRefs.current[id].classList.add("active")
-
-
-      // if (verseRefs.current) {
-      //   if (id >= 1) {
-      //     verseRefs.current[id - 1].classList.remove("active")
-      //   }
-      //   if (id <= verseRefs.current.length - 2) {
-      //     verseRefs.current[id + 1].classList.remove("active")
-      //   }
-      //
-      // }
-
-    } else {
-      target.classList.remove("active")
-      verseNumberRefs.current[id].classList.remove("active")
-    }
-
-  }
+  useEffect(() => {
+    let height = window.innerHeight
+    surahRef.current.style.top = `${height / 2 - 55}px`
+    sidebarRef.current.style.top = `${height / 2 - 15}px`
+  }, [])
 
   useEffect(() => {
 
-    const options = {
-      rootMargin: "-49.5% 0% -49.5% 0%"
-    }
+    let currentVerse = verseRefs.current[number]
+    let currentVerseNumber = verseNumberRefs.current[number]
 
-    const current = verseRefs.current
+    // set this verse to be active
+    currentVerse.classList.add("active")
+    currentVerseNumber.classList.add("active")
 
-    const observer = new IntersectionObserver(verseVisible, options)
+    // Move everything
+    const offsetVerse = currentVerse.offsetTop + (currentVerse.getBoundingClientRect().height / 2.2)
+    const offsetVerseNumber = currentVerseNumber.offsetTop
 
-    if (current) {
-      for (const element of current) {
-        observer.observe(element)
+    surahRef.current.style.top = `${window.innerHeight / 2 - 30 - offsetVerse}px`
+    sidebarRef.current.style.top = `${window.innerHeight / 2 - 15 - offsetVerseNumber}px`
+
+
+  }, [number])
+
+
+  function up(e) {
+    setNumber(prev => {
+      if (prev <= verses.length - 2) {
+        verseRefs.current[prev].classList.remove("active")
+        verseNumberRefs.current[prev].classList.remove("active")
+        return prev + 1
+      } else {
+        return prev
       }
-    }
+    })
+  }
 
-
-    return () => {
-      for (const element of current) {
-        observer.unobserve(element)
+  function down(e) {
+    setNumber(prev => {
+      if (prev > 0) {
+        verseRefs.current[prev].classList.remove("active")
+        verseNumberRefs.current[prev].classList.remove("active")
+        return prev - 1
+      } else {
+        return prev
       }
-    }
+    })
+  }
 
-  }, [verseRefs])
+  function clickVerse(e, num) {
+    setNumber(prev => {
+      verseRefs.current[prev].classList.remove("active")
+      verseNumberRefs.current[prev].classList.remove("active")
+      return num
+    })
+  }
+
+
+  function openCommentary(e) {
+    const target = e.target
+    if (target.classList.contains("active")) {
+      cRef.current.style.height = "250px";
+      setCOpen(true)
+    }
+  }
+
+  function closeCommentary(e) {
+    const target = e.target
+    if (target.classList.contains("active")) {
+      cRef.current.style.height = "0px";
+      setCOpen(false)
+    }
+  }
 
 
   return (
@@ -90,13 +115,30 @@ function App() {
 
       <div className="main">
 
+        <div className="overlay"></div>
+
         <div className="sidebar">
 
-          <div className="verse-numbers">
+          <div className="arrow up-arrow" onClick={down}>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div className="arrow down-arrow" onClick={up}>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div className="verse-numbers" ref={sidebarRef}>
 
             {
               verses.map((el, index) => {
-                return <span ref={e => verseNumberRefs.current[index] = e} key={index} id={`verse-${index}`}>{`Verse ${index}`}</span>
+                return <Fragment key={index}>
+
+                  <span ref={e => verseNumberRefs.current[index] = e} id={`verse-${index}`} onClick={e => clickVerse(e, index)}>{`Verse ${index + 1}`}</span>
+
+                </Fragment>
+
               })
             }
 
@@ -104,14 +146,26 @@ function App() {
 
         </div>
 
-        <div className="surah">
+        <div className="surah" ref={surahRef}>
 
           {
             verses.map((el, index) => {
-              return (
-                <span className="verse" id={index} key={index} ref={e => verseRefs.current[index] = e}>{el}</span>
-              )
+              return <Fragment key={index}>
+
+                <span className="verse" id={index} ref={e => verseRefs.current[index] = e} onMouseEnter={openCommentary} onMouseLeave={closeCommentary}>{el}</span>
+
+              </Fragment>
+
             })
+          }
+
+        </div>
+
+        <div className="commentary" ref={cRef}>
+
+          {
+            cOpen &&
+            <span>{commentary[number]}</span>
           }
 
         </div>
@@ -120,7 +174,7 @@ function App() {
 
       <div className="footer">
 
-        <span>&#169; Hugo Hua</span>
+        <span>&#169; Hugo Hua 2022</span>
 
       </div>
 

@@ -31,21 +31,82 @@
 .main {
   height: 100vh;
   display: flex;
-  padding-top: 50px;
+  overflow-y: hidden;
+  position: relative;
+
+  .overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(rgb(255 255 255) 0%, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0) 75%, rgb(255 255 255) 100%);
+  }
 }
 
 .sidebar {
   width: 25%;
   height: 100%;
-  overflow-y: hidden;
+  position: relative;
+
+  .arrow {
+    position: absolute;
+    height: 25px;
+    width: 25px;
+    left: 20%;
+    z-index: 2;
+    cursor: pointer;
+
+    span {
+      position: absolute;
+      height: 2px;
+      background: black;
+      width: 100%;
+      display: block;
+      border-radius: 3px;
+      top: 50%;
+    }
+  }
+
+  .up-arrow {
+    top: calc(50% - 40px);
+    transform: translateY(-50%);
+
+    span:nth-child(1) {
+      transform: rotate(50deg);
+      left: 7px;
+    }
+
+    span:nth-child(2) {
+      transform: rotate(310deg);
+      right: 8px;
+    }
+  }
+
+  .down-arrow {
+    top: calc(50% + 40px);
+    transform: translateY(-50%);
+
+    span:nth-child(1) {
+      transform: rotate(50deg);
+      right: 8px;
+    }
+
+    span:nth-child(2) {
+      transform: rotate(310deg);
+      left: 7px;
+    }
+  }
 
   .verse-numbers {
     position: relative;
+    transition: top 1s;
+    cursor: pointer;
 
     span {
       display: block;
-      margin-top: 40px;
-      color: gray;
+      margin-bottom: 40px;
+      color: #bdbdbd;
       position: relative;
       left: 50%;
     }
@@ -53,23 +114,33 @@
     span.active {
       color: black;
     }
+
+    span:hover {
+      text-decoration: underline;
+    }
   }
 }
 
 .surah {
   width: 75%;
   height: 100%;
-  overflow-y: scroll;
   padding-right: 20px;
   line-height: 80px;
+  position: relative;
+  transition: top 1s;
 
   .verse {
     font-size: 65px;
-    color: gray;
+    color: #bdbdbd;
   }
 
   .verse.active {
     color: black;
+  }
+
+  .verse.active:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
   }
 }
 
@@ -77,10 +148,31 @@
   display: none;
 }
 
+.commentary {
+  position: absolute;
+  bottom: 0px;
+  height: 0px;
+  width: 100%;
+  background: white;
+  z-index: 2;
+  transition: height 0.5s;
+  padding: 40px 50px;
+  font-size: 20px;
+  text-align: center;
+}
+
 .footer {
   height: 200px;
   background: black;
   color: white;
+  position: relative;
+
+  span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 
